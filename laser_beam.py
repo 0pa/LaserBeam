@@ -63,8 +63,17 @@ class LaserBeam:
         plt.colorbar()
         plt.show()
 
-    def save_image(self):
-        plt.imsave(self.file_name+'.png', self.pixel_matrix)
+    def save_image(self, file_name=None):
+        file_name = file_name or self.file_name+'.png'
+        plt.imsave(file_name, self.pixel_matrix)
+
+    @staticmethod
+    def fit_gaussian(y):
+        x = np.arange(len(y))
+        mean = sum(x * y) / sum(y)
+        sigma = np.sqrt(sum(y * (x - mean) ** 2) / sum(y))
+
+        return mean, sigma
 
 
 if __name__ == '__main__':
@@ -76,3 +85,7 @@ if __name__ == '__main__':
 
     x.save_image()
     y.draw_image()
+
+    row = len(x.pixel_matrix[10]) // 2 + 1
+    mean, sigma = LaserBeam.fit_gaussian(x.pixel_matrix[row])
+    print(mean, sigma)
