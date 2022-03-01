@@ -17,6 +17,7 @@ class LaserBeam:
     mapping: np.array
     image_width: int
     image_height: int
+    file_name: str = 'file_name'
 
     @staticmethod
     def validate_laser_beam_obj(lb):
@@ -26,14 +27,14 @@ class LaserBeam:
         assert np.all(lb.mapping >= 0)
 
     @classmethod
-    def from_hdf(cls, path, pixel_size=3):
+    def from_hdf(cls, path):
         with h5py.File(path, 'r') as f:
             sensor = f[DATA][SENSOR][:]
             mapping = f[DATA][MAPPING][:]
             image_width = f[DATA].attrs[IMAGE_WIDTH]
             image_height = f[DATA].attrs[IMAGE_HEIGHT]
 
-        obj = cls(sensor, mapping, image_width, image_height)
+        obj = cls(sensor, mapping, image_width, image_height, path)
         LaserBeam.validate_laser_beam_obj(obj)
 
         return obj
@@ -62,6 +63,9 @@ class LaserBeam:
         plt.colorbar()
         plt.show()
 
+    def save_image(self):
+        plt.imsave(self.file_name+'.png', self.pixel_matrix)
+
 
 if __name__ == '__main__':
     path1 = 'data/data.hdf5'
@@ -70,5 +74,5 @@ if __name__ == '__main__':
     x = LaserBeam.from_hdf(path1)
     y = LaserBeam.from_hdf(path2)
 
-    x.draw_image()
+    x.save_image()
     y.draw_image()
