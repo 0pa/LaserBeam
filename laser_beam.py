@@ -49,13 +49,13 @@ class LaserBeam:
     @property
     def pixels(self):
         cumsum = self.clean_sensor.cumsum()[self.clean_mapping == EOP]
-        return np.diff(cumsum, prepend=cumsum[0])
+        return np.diff(cumsum, prepend=0)
 
     @property
     def pixel_matrix(self):
         assert len(self.pixels) % self.image_width == 0
 
-        return self.pixels.reshape([self.image_width, self.image_height])
+        return self.pixels.reshape([self.image_height, self.image_width])
 
     def draw_image(self):
         plt.imshow(self.pixel_matrix)
